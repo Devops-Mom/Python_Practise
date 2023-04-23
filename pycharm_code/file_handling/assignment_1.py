@@ -7,38 +7,113 @@
 # 5- Create a new file and write this information to the new file
 # (https://www.kaggle.com/arunkumar413/student-marks)
 
-student_record = {} # empty dictionary
+student_record = {}   # empty dictionary
 
-with open('student_marks.csv','r') as f:
-     f.read() #read file once
+with open("student_marks.csv", "r") as f:
+     f.read() # read the content of file
 
-     f.seek(0) # go to first postion again
+     f.seek(0) #goto the start of file
 
-     keys = f.readline() # read first line of file and treat them as keys.
+     d = {}
+     keys = f.readline() #read 1st line as it contains keys
 
-     keys = keys.split(',')
-     keys[-1] =  keys[-1][:-1]
+     #print(keys)
+     '''
+     Output:
+     Name,Gender,DOB,Maths,Physics,Chemistry,English,Biology,Economics,History,Civics
+     '''
 
-     for key in keys:
-          student_record[key] = []
+     keys = keys.split(",") # remove "," comma between values in keys
+     #print(keys)
+     '''
+     Output:
+     ['Name', 'Gender', 'DOB', 'Maths', 'Physics', 'Chemistry', 'English', 'Biology', 'Economics', 'History', 'Civics\n']
+     '''
+     keys[-1] = keys[-1][:-1] # remove "\n" from list
+     #print(keys)
+     '''
+     Output:
+     ['Name', 'Gender', 'DOB', 'Maths', 'Physics', 'Chemistry', 'English', 'Biology', 'Economics', 'History', 'Civics']
+     '''
+     for key in keys: # Initialize dictionary with the keys
+          d[key] = []
 
-     print(student_record) # print dictionaries with keys
+     #print(d)
 
      for line in f.readlines():
-          data = line.split(',')
-          data[-1] = data[-1][:-1]
+          data = line.split(",") # remove "," from line
+          data[-1] = data[-1][:-1] # remove "\n" from last field
 
-          j=0
-          for key in student_record:
-               student_record[key].append(data[j])
+          #print(data)
+          j = 0
+          for key in d:
+               #print(f'{key} ==>{data[j]}')
+               d[key].append(data[j])
                j+=1
 
+     #print(d)
+
+import pprint
+
+pprint.pprint(d)
+
+print("Keys: ")
+print(d.keys())  # Print all Keys
+
+print("Values: ")
+print(d.values()) # Print all Values
+
+# 3- Add a new field to the dictionary `total_marks` and store the total marks of the students.
+# Here, we have 5 students:
+# Here, we have 8 subjects:
+d['total_marks'] = [0]*5  # returns [0,0,0,0,0]
+
+all_subjects = ['Maths', 'Physics', 'Chemistry', 'English', 'Biology', 'Economics', 'History', 'Civics']
+for i in range(5):
+          sum_marks = 0
+          for subject in all_subjects:
+               try:
+                    sum_marks += int(d[subject][i])
+               except:
+                    pass
+
+          d['total_marks'][i] = sum_marks
+
+print(d['total_marks'])
+
+# 4- Add a new field to the dictionary `Average` and store the average marks of the students.
+
+d['average'] = [0]*5
+
+total_subject = len(all_subjects)
+
+for i in range(5):
+          d['average'][i] = float (d['total_marks'][i]/total_subject)
 
 
-     print(student_record) #print entire dictionary
+print(f"Average : {d['average']}")
 
-# Create new field "total_marks"
-     student_record['total_marks']=[]
-     for key,data in student_record.items():
-          total = data
-     print(student_record)
+# 5- Create a new file and write this information to the new file
+
+pprint.pprint(d)
+
+with open("student_marksheet.csv","w") as f_out:
+     header = ','.join([key for key in d.keys()])
+     #print(header)
+     f_out.write(header+'\n')
+
+     for i in range(5):
+          #print(f'{key} ==> {d[key][i]}')
+          try:
+               row = ','.join([str(d[key][i]) for key in d.keys()])
+          except:
+               pass
+          #print(row)
+          f_out.write(row + '\n')
+
+
+
+with open("student_marks.csv","r") as f:
+     f.readlines()
+     print(f)
+
